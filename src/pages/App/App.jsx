@@ -131,6 +131,33 @@ class App extends Component {
       guesses: guessesCopy,
       finalTime: (perfect === 4) ? prevState.elapsedTime : 0
     }));
+
+    if (this.state.guesses[this.state.guesses.length-1].score.perfect === 4){
+      let initials = window.prompt('hey yo betsy, gimme dat number')
+      let sortedScores = this.state.scores.sort(function(score1, score2) {
+        return score2.numGuesses - score1.numGuesses
+      })
+      let lowestScore = sortedScores.slice(0,10)[0]
+      if(this.state.guesses.length < lowestScore.numGuesses){
+        console.log(this.state.guesses.length)
+        fetch('/api/scores/new', {
+          method: 'POST',
+          body: JSON.stringify({
+            numGuesses: this.state.guesses.length,
+            initials: initials,
+            seconds: this.state.elapsedTime
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(data => data.json())
+        .then(res => console.log(res))
+      }
+      //check if current score is in high score list
+      //if yes (add score to db)
+      //else null 
+    }
   }
 
   handleTick = () => {
