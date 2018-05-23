@@ -7,6 +7,7 @@ import {
 import './App.css';
 import GamePage from '../GamePage/GamePage';
 import SettingsPage from '../SettingsPage/SettingsPage';
+import ScoresPage from '../ScoresPage/ScoresPage'
 
 let colorTable = [
   {name: 'Easy', colors: ['#7CCCE5', '#FDE47F', '#E04644', '#B576AD']},
@@ -18,7 +19,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = Object.assign(
-      {difficultyLevel: 0, colors: colorTable[0].colors},
+      {difficultyLevel: 0, colors: colorTable[0].colors, scores: []},
       this.getInitialState()
     );
   }
@@ -138,6 +139,13 @@ class App extends Component {
     }));
   }
 
+/* Life Cycle Methods */
+
+  componentDidMount() {
+    fetch('/api/scores').then(res => res.json())
+    .then(scores => this.setState({scores}))
+  }
+
   render() {
     return (
       <div>
@@ -166,11 +174,17 @@ class App extends Component {
                   handleNewGame={this.handleNewGameClick}
                 />
               }/>
+              <Route exact path='/scores' render={() =>
+              <ScoresPage
+                scores={this.state.scores}
+
+              /> 
+              }/>
             </Switch>
         </Router>
       </div>
     );
   }
-}
+};
 
 export default App;
